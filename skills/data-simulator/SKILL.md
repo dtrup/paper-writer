@@ -367,15 +367,83 @@ To use profiled mode:
 
 ---
 
-## Validation Checks
+## Pre-Save Validation
 
-Before outputting data, verify:
+Before saving `responses_raw.csv`, run these validation checks:
+
+### Validation Checklist
+1. ☐ Column count matches expected: demographics + instrument items
+2. ☐ All item columns present with correct naming (e.g., Q1_MSS...Q76_MSS, Q1_PID...Q25_PID)
+3. ☐ No NaN values in response columns
+4. ☐ Response ranges valid per instrument scale
+5. ☐ Respondent count matches config
+
+### Validation Script
+
+```python
+def validate_responses(df, instruments):
+    """
+    Validate response data before saving.
+
+    Args:
+        df: DataFrame with responses
+        instruments: List of dicts with 'name', 'items', 'scale_range'
+    """
+    errors = []
+
+    for inst in instruments:
+        name = inst['name']
+        n_items = inst['items']
+        scale_min, scale_max = inst['scale_range']
+
+        # Check all columns exist
+        expected_cols = [f"Q{i}_{name}" for i in range(1, n_items + 1)]
+        missing = [c for c in expected_cols if c not in df.columns]
+        if missing:
+            errors.append(f"Missing {name} columns: {missing[:5]}{'...' if len(missing) > 5 else ''}")
+
+        # Check value ranges
+        for col in expected_cols:
+            if col in df.columns:
+                out_of_range = ~df[col].between(scale_min, scale_max)
+                if out_of_range.any():
+                    errors.append(f"{col} has {out_of_range.sum()} values outside {scale_min}-{scale_max}")
+
+        # Check for NaN
+        inst_cols = [c for c in expected_cols if c in df.columns]
+        nan_count = df[inst_cols].isna().sum().sum()
+        if nan_count > 0:
+            errors.append(f"{name} has {nan_count} NaN values")
+
+    if errors:
+        raise ValueError("Validation failed:\n" + "\n".join(errors))
+
+    print(f"✓ Validation passed: {len(df)} respondents, {len(df.columns)} columns")
+    return True
+```
+
+### Example Usage
+
+```python
+# Before saving
+instruments = [
+    {"name": "MSS", "items": 76, "scale_range": [0, 4]},
+    {"name": "PID", "items": 25, "scale_range": [0, 3]}
+]
+validate_responses(df, instruments)
+df.to_csv('outputs/data/responses_raw.csv', index=False)
+```
+
+---
+
+## Post-Generation Validation
+
+After generating data, verify:
 
 1. **Correlation achievement**: |target - achieved| < 0.10
 2. **Distribution shapes**: Skewness within expected ranges
 3. **Scale boundaries**: No values outside valid range
-4. **Missing pattern**: MCAR (missing completely at random)
-5. **Internal consistency**: Cronbach alpha > 0.70 for subscales
+4. **Internal consistency**: Cronbach alpha > 0.70 for subscales
 
 ```python
 def validate_simulated_data(data, targets):

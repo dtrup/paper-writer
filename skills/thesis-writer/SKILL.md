@@ -424,11 +424,9 @@ Assembled document with:
 
 ## Assembly Script
 
-Use the docx skill to assemble final document:
+To assemble the final document:
 1. Read all chapter markdown files
-2. Convert to docx with proper formatting
+2. Convert to docx with proper formatting (using python-docx or similar)
 3. Insert tables and figures
 4. Generate table of contents
 5. Apply consistent styling
-
-See `skills/docx/SKILL.md` for document creation procedures.

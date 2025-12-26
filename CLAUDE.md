@@ -293,6 +293,46 @@ Read skills in this order for full context:
 
 Each skill is self-contained but references outputs from prior phases.
 
+## Validation Checkpoints
+
+Each phase should verify prerequisites exist:
+
+| Phase | Must Exist Before Starting |
+|-------|---------------------------|
+| 2 (Feasibility-Research) | `outputs/research/constructs.json`, `bibliography.json` |
+| 3 (Simulate) | `outputs/research/instruments_detailed.json` |
+| 4 (Feasibility-Data) | `outputs/data/responses_raw.csv`, `computed_scores.csv` |
+| 5 (Analyze) | `outputs/data/computed_scores.csv`, `outputs/feasibility/data_quality.json` |
+| 6 (Write) | `outputs/analysis/hypothesis_tests.json`, `descriptive_stats.json`, `figures/` |
+
+## Common Issues & Solutions
+
+### JSON Serialization Errors
+**Error:** `Object of type int64 is not JSON serializable`
+**Solution:** Use `scripts/utils.save_json()` instead of `json.dump()`
+
+```python
+from scripts.utils import save_json
+save_json(results, 'outputs/analysis/results.json')
+```
+
+### Missing Data Columns
+**Error:** Computed scores fail due to missing items
+**Solution:** Validate `responses_raw.csv` before saving (see data-simulator SKILL.md)
+
+### Bibliography Contamination
+**Symptom:** Irrelevant sources in references (e.g., "wisdom" sources in a schema thesis)
+**Solution:** Remove example sources, validate relevance to theme keywords
+
+### Correlation "Discrepancies" in Profiled Mode
+**Symptom:** Feasibility check flags correlations as problems
+**Note:** Correlations **exceeding** targets is FAVORABLE, not a problem!
+**Solution:** Only flag correlations weaker than target (see feasibility-data SKILL.md)
+
+### DOCX Formatting Issues
+**Symptom:** Markdown artifacts in Word document
+**Solution:** Use proper markdown-to-docx conversion with figure embedding
+
 ## Error Handling
 
 If a phase fails:

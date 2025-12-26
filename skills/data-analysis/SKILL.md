@@ -7,6 +7,19 @@ description: "Perform statistical analysis on research data including descriptiv
 
 Statistical analysis and visualization for social science thesis research.
 
+## JSON Output
+
+When saving analysis results to JSON, use the utility function to handle numpy types:
+
+```python
+from scripts.utils import save_json
+
+# Use instead of json.dump() to avoid serialization errors
+save_json(results, 'outputs/analysis/results.json')
+```
+
+This automatically converts numpy types (int64, float64, bool_) to native Python types.
+
 ## Core Workflow
 
 ### Step 1: Load Data and Hypotheses

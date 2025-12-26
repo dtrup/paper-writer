@@ -209,6 +209,65 @@ Full instrument specifications as shown in Step 4.
 - **Recent sources (2020+)**: At least 40% of total
 - **Seminal works**: 3-5 foundational sources per construct
 
+## Bibliography Quality Control
+
+### Relevance Validation
+
+Before finalizing bibliography, verify each source:
+1. ☐ Title directly relates to thesis theme
+2. ☐ Abstract mentions key constructs from `inputs/config.json`
+3. ☐ Not from example/template files
+
+### Anti-Contamination Checklist
+
+Sources are likely **contaminated** (from templates/examples) if they contain:
+- Topics not in the thesis theme (e.g., "wisdom" in a schema/personality thesis)
+- Authors from example templates that don't match the research area
+- Generic psychology sources unrelated to specific constructs
+
+**Always remove:**
+- Any carried-over example sources from templates
+- Sources that don't match keywords in the thesis theme
+- References cited in skill files as examples
+
+### Validation Script
+
+```python
+def validate_bibliography(sources, theme_keywords):
+    """
+    Check that all sources are relevant to the thesis theme.
+
+    Args:
+        sources: List of bibliography entries
+        theme_keywords: List of keywords from config (e.g., ["schema", "personality", "maladaptive"])
+    """
+    contaminated = []
+
+    for source in sources:
+        title_lower = source['title'].lower()
+        # Check if any theme keyword appears in title
+        relevant = any(kw.lower() in title_lower for kw in theme_keywords)
+
+        if not relevant:
+            contaminated.append(source)
+
+    if contaminated:
+        print(f"⚠️ Found {len(contaminated)} potentially irrelevant sources:")
+        for s in contaminated:
+            print(f"  - {s['apa'][:80]}...")
+
+    return contaminated
+```
+
+### Red Flags to Remove
+
+Example sources that should NEVER appear unless directly relevant:
+- "The wisdom of the ego" (wisdom research)
+- "Psychological wisdom research" (wisdom, not schemas)
+- "Self-report wisdom measures" (wisdom instruments)
+
+**Rule**: If a source topic doesn't appear in `inputs/config.json` theme, it's contaminated.
+
 ## Error Handling
 
 ### Instrument Not Found

@@ -109,6 +109,11 @@ To use profiled mode, copy and customize:
 cp inputs/respondent_profiles_template.json inputs/respondent_profiles.json
 ```
 
+**Profiled Mode Considerations:**
+- Correlations may **exceed** literature targets (this is good - stronger effects)
+- Reliability may appear high (α > 0.90) due to profile consistency
+- Results require appropriate caveats in discussion section
+
 **Outputs:** `outputs/data/`
 
 ### Phase 4: Feasibility - Data Validation (Checkpoint)
@@ -195,6 +200,20 @@ See `skills/data-simulator/references/demographics_template.md` for more options
 The toolkit generates English output by default. For other languages, specify in your prompt:
 
 > "Write all thesis chapters in Romanian"
+
+## Key Output Files
+
+| Phase | File | Description |
+|-------|------|-------------|
+| 1 | `outputs/research/instruments_detailed.json` | Full instrument specifications |
+| 1 | `outputs/research/bibliography.json` | APA-formatted sources |
+| 2 | `outputs/feasibility/direction_recommendation.md` | Recommended research angle |
+| 3 | `outputs/data/responses_raw.csv` | Item-level responses |
+| 3 | `outputs/data/computed_scores.csv` | Schema/domain scores |
+| 4 | `outputs/feasibility/data_feasibility_report.md` | Data validation results |
+| 5 | `outputs/analysis/hypothesis_tests.json` | All hypothesis test results |
+| 5 | `outputs/analysis/figures/*.png` | Publication-quality visualizations |
+| 6 | `outputs/thesis/thesis_draft.docx` | Final formatted document |
 
 ## Repository Structure
 
