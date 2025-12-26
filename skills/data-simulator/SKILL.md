@@ -7,9 +7,34 @@ description: "Generate realistic simulated research data with proper distributio
 
 Generate realistic simulated data for research methodology demonstration.
 
+## Simulation Modes
+
+This skill supports two simulation modes:
+
+### Mode 1: Statistical Simulation (Default)
+Generate anonymous respondents with statistically valid distributions and correlations. Good for testing methodology.
+
+### Mode 2: Profiled Respondents (Recommended for meaningful analysis)
+Generate responses from known historical/literary figures based on their documented personalities. Creates psychologically coherent, emotionally plausible data.
+
+**To use profiled mode**: Create `inputs/respondent_profiles.json` (see template at `inputs/respondent_profiles_template.json`)
+
+---
+
 ## Core Workflow
 
-### Step 1: Load Instrument Specifications
+### Step 1: Check Simulation Mode
+
+```python
+# Check if profiled respondents are configured
+if Path('inputs/respondent_profiles.json').exists():
+    mode = "profiled"
+    profiles = load_profiles('inputs/respondent_profiles.json')
+else:
+    mode = "statistical"
+```
+
+### Step 2: Load Instrument Specifications
 Read from `outputs/research/instruments_detailed.json`:
 - Item count per instrument
 - Subscale structure
@@ -229,6 +254,118 @@ P001,35,female,bachelor
 - N=50: Adequate for correlation detection (r > 0.35)
 - N=100: Better power for moderate effects
 - N=200+: Required for regression/SEM
+
+---
+
+## Profiled Respondent Mode
+
+When `inputs/respondent_profiles.json` exists, use this approach instead of statistical simulation.
+
+### Simple Configuration
+
+The profile file contains just a list of names:
+
+```json
+{
+  "simulation_mode": "profiled_respondents",
+  "respondents": [
+    "Friedrich Nietzsche",
+    "Oscar Wilde",
+    "Jorge Luis Borges",
+    ...
+  ]
+}
+```
+
+The LLM (you, the AI assistant) already knows these figures well enough to generate psychologically coherent responses.
+
+### Generating Responses from Biographical Knowledge
+
+For each named respondent:
+
+1. **Recall biographical knowledge**:
+   - Life struggles and traumas
+   - Documented personality traits
+   - Known psychological issues
+   - Relationship patterns
+   - Professional/creative style
+
+2. **Map to instrument constructs**:
+   - For each subscale/domain, consider how this person would realistically score
+   - Base judgments on documented facts, not stereotypes
+   - Account for complexity and contradictions
+
+3. **Generate item-level responses**:
+   - Create responses consistent with the inferred profile
+   - Add realistic within-person variation (not all items at extremes)
+   - Maintain psychological coherence across instruments
+
+### Example Thought Process
+
+**Respondent: Franz Kafka**
+
+Biographical facts:
+- Tormented relationship with authoritarian father
+- Chronic feelings of inadequacy and failure
+- Social anxiety and isolation
+- Obsessive self-criticism
+- Never married, difficult relationships
+- Themes: guilt, alienation, absurdity
+
+MSS-YSQ likely responses:
+- Defectiveness/Shame: HIGH (constant self-criticism)
+- Emotional Deprivation: HIGH (cold parental relationships)
+- Social Isolation: HIGH (documented social anxiety)
+- Subjugation: HIGH (dominated by father)
+- Unrelenting Standards: HIGH (perfectionism, self-punishment)
+
+PID-5 likely responses:
+- Negative Affect: VERY HIGH (anxiety, depression)
+- Detachment: HIGH (social withdrawal)
+- Antagonism: LOW (submissive, not dominating)
+- Disinhibition: LOW (controlled, rigid)
+- Psychoticism: MODERATE (unusual perceptions in work)
+
+Item-level responses would cluster around these tendencies with realistic variation.
+
+### Demographic Inference
+
+For each respondent, also determine from knowledge:
+- Birth year
+- Death year (if applicable)
+- Profession (writer, philosopher, scientist, etc.)
+- Nationality
+
+### Output Format
+
+```csv
+participant_id,name,birth_year,death_year,profession,nationality,Q1,Q2,Q3,...
+P001,Friedrich Nietzsche,1844,1900,philosopher,German,4,5,4,...
+P002,Oscar Wilde,1854,1900,writer,Irish,3,2,5,...
+P003,Franz Kafka,1883,1924,writer,Austrian,5,5,5,...
+```
+
+### Benefits of This Approach
+
+1. **Psychological coherence**: Responses reflect actual personality patterns
+2. **No manual profiling needed**: LLM already knows these figures
+3. **Interpretable results**: Can reference specific cases in discussion
+4. **Face validity**: Results should "make sense" given what we know
+5. **Efficient**: Just provide names, AI does the psychological inference
+
+### Template Usage
+
+See `inputs/respondent_profiles_template.json` for:
+- List of 50 suggested figures (writers, philosophers, scientists, artists from last 150 years)
+- Simple JSON format
+- Instructions for the LLM
+
+To use profiled mode:
+1. Copy template: `cp inputs/respondent_profiles_template.json inputs/respondent_profiles.json`
+2. Optionally customize the list of names
+3. Run data simulation - the AI will handle the rest
+
+---
 
 ## Validation Checks
 
