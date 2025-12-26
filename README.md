@@ -98,11 +98,16 @@ Review this before proceeding to ensure you're pursuing something meaningful.
 
 ### Phase 3: Data Simulation
 
-Generate realistic synthetic data:
-- Generate demographic profiles (Romanian sample by default)
-- Simulate questionnaire responses with proper distributions
-- Embed correlations based on refined hypotheses
-- Compute subscale scores
+Generate realistic synthetic data. Two modes available:
+
+**Mode A: Statistical (default)** - Anonymous respondents with valid distributions
+
+**Mode B: Profiled Respondents (recommended)** - Known historical/literary figures (Nietzsche, Woolf, Borges, etc.) as respondents, with psychologically coherent responses based on their documented personalities.
+
+To use profiled mode, copy and customize:
+```bash
+cp inputs/respondent_profiles_template.json inputs/respondent_profiles.json
+```
 
 **Outputs:** `outputs/data/`
 
