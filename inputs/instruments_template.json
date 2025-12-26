@@ -1,0 +1,40 @@
+{
+  "instruments": [
+    {
+      "name": "TEMPLATE",
+      "full_name": "Full Instrument Name Here",
+      "author": "Author, Year",
+      "purpose": "What the instrument measures",
+      "items": 40,
+      "subscales": [
+        {
+          "name": "subscale_1",
+          "items": [1, 2, 3, 4, 5],
+          "description": "What this subscale measures"
+        },
+        {
+          "name": "subscale_2",
+          "items": [6, 7, 8, 9, 10],
+          "description": "What this subscale measures"
+        }
+      ],
+      "scale_type": "likert",
+      "scale_range": [1, 5],
+      "scale_anchors": {
+        "1": "strongly disagree",
+        "5": "strongly agree"
+      },
+      "scoring": "mean_per_subscale",
+      "reverse_scored": [],
+      "item_texts": [
+        "1. First item text here",
+        "2. Second item text here"
+      ],
+      "validity": {
+        "cronbach_alpha": 0.85,
+        "notes": "Validated on X population"
+      }
+    }
+  ],
+  "notes": "Remove this template and add your actual instruments. If instrument details are unknown, the research phase will attempt to find them."
+}
